@@ -1,6 +1,6 @@
 Billboard cinema
 ---
-First at all, this project is building and not completed now. 
+First at all, this project is building and not completed yet. 
 
 It's intended to be a monorepo that stores microservices written in python:
 

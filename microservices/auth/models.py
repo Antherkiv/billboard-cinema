@@ -1,14 +1,19 @@
-from sqlalchemy import Column, Integer, String
+from uuid import uuid4
+from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects.postgresql import UUID
+
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+
 from utils.auth import make_password, check_password
 
 from .db import engine
 
 Base = declarative_base()
 
+
 class User(Base):
-    id = Column(Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
     username = Column(String, nullable=False)
     _password = Column(String, nullable=False)
 
@@ -32,5 +37,6 @@ class User(Base):
     @hybrid_method
     def check_password(self, plain_password):
         return check_password(plain_password, self.password)
+
 
 Base.metadata.create_all(engine)

@@ -16,7 +16,7 @@ DEFAULT_LIMIT = 10
 
 class Movies(object):
     def on_get(self, req, resp):
-        query = session.query(Movie).order_by(desc(Movie.release_date)).limit(
+        query = session.query(Movie).order_by(desc(Movie.release_date)).order_by(Movie.title).limit(
             req.params.get('limit', DEFAULT_LIMIT)).offset(
                 req.params.get('offset', DEFAULT_OFFSET))
 

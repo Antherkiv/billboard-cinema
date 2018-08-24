@@ -2,7 +2,7 @@ from falcon.media.validators import jsonschema
 from falcon import HTTP_409, HTTP_201, HTTP_200
 
 from sqlalchemy.sql import exists
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 
 from arrow import get
 
@@ -19,7 +19,14 @@ class Movies(object):
         query = session.query(Movie).order_by(desc(Movie.release_date)).limit(
             req.params.get('limit', DEFAULT_LIMIT)).offset(
                 req.params.get('offset', DEFAULT_OFFSET))
-        resp.media = movie_schema.dump(query, many=True).data
+
+        total = session.query(func.count(Movie.id)).scalar()
+
+        resp.media = {
+            'total': total,
+            'results': movie_schema.dump(query, many=True).data
+        }
+
         resp.status = HTTP_200
 
     @jsonschema.validate(movie_json_schema)

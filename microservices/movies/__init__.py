@@ -4,7 +4,7 @@ from falcon_jwt_checker import JwtChecker
 from json import JSONEncoder
 from uuid import UUID
 
-from .resources import Movies
+from .resources import Movies, MovieReviews
 
 
 JSONEncoder_olddefault = JSONEncoder.default
@@ -23,5 +23,6 @@ jwt_checker = JwtChecker(
 
 api = API(middleware=[jwt_checker])
 api.add_route('/movies', Movies())
+api.add_route('/movies/{lookup_arg}/review', MovieReviews())
 
 

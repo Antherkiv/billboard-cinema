@@ -14,6 +14,7 @@ Base = declarative_base()
 class Movie(Base):
     id = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
     synopsis = Column(String, nullable=False)
+    slug = Column(String, nullable=False, unique=True)
     title = Column(String, nullable=False, unique=True)
     release_date = Column(UtcDateTime(), nullable=False)
     __tablename__ = 'movies'
@@ -21,9 +22,10 @@ class Movie(Base):
 
 class MovieReview(Base):
     id = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
-    movie_id = Column(UUID(as_uuid=True), ForeignKey("movies.id"))
-    movie = relationship("Movie", backref=backref('reviews'))
-    body = Column(JSON())
+    slug = Column(String, unique=True, nullable=False, )
+    movie_id = Column(UUID(as_uuid=True), ForeignKey("movies.id"), nullable=False, )
+    movie = relationship("Movie", backref=backref('reviews'),)
+    body = Column(JSON(), nullable=False)
 
     __tablename__ = 'reviews'
 

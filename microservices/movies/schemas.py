@@ -1,26 +1,23 @@
-from uuid import uuid4
 from marshmallow_sqlalchemy import ModelSchema
-from marshmallow.fields import UUID
 from .db import session
 from .models import Movie, MovieReview
 
 
 class MovieSchema(ModelSchema):
-    id = UUID(missing=uuid4)
     class Meta:
         model = Movie
         sqla_session = session
 
+movie_schema = MovieSchema()
 
 class MovieReviewSchema(ModelSchema):
-    id = UUID(missing=uuid4)
-    movie_id = UUID(missing=uuid4)
+
     class Meta:
         model = MovieReview
         sqla_session = session
 
 
-movie_schema = MovieSchema()
+movie_review_schema = MovieReviewSchema()
 
 movie_json_schema = {
     'type': 'object',

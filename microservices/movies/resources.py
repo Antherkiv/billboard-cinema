@@ -1,7 +1,8 @@
 from falcon.media.validators import jsonschema
-from falcon import HTTP_409, HTTP_201
+from falcon import HTTP_409, HTTP_201, HTTP_200
 
 from sqlalchemy.sql import exists
+from sqlalchemy import desc
 
 from arrow import get
 
@@ -9,10 +10,21 @@ from .schemas import movie_json_schema, movie_schema
 from .models import Movie, MovieReview
 from .db import session
 
+DEFAULT_OFFSET = 0
+DEFAULT_LIMIT = 10
+
 
 class Movies(object):
+    def on_get(self, req, resp):
+        query = session.query(Movie).order_by(desc(Movie.release_date)).limit(
+            req.params.get('limit', DEFAULT_LIMIT)).offset(
+                req.params.get('offset', DEFAULT_OFFSET))
+        resp.media = movie_schema.dump(query, many=True).data
+        resp.status = HTTP_200
+
     @jsonschema.validate(movie_json_schema)
     def on_post(self, req, resp, **params):
+        print(params)
         media = req.media.copy()
         if session.query(
                 exists().where(Movie.title == media['title'])).scalar():

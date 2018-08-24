@@ -1,8 +1,9 @@
 from falcon.media.validators import jsonschema
-from falcon import HTTP_409, HTTP_201, HTTP_200
+from falcon import HTTP_409, HTTP_201, HTTP_200, HTTP_404
 
 from sqlalchemy.sql import exists
 from sqlalchemy import desc, func
+from sqlalchemy.orm.exc import NoResultFound
 
 from slugify import slugify
 from uuid import UUID
@@ -76,8 +77,11 @@ class MovieReviews(object):
 
         query_kwarg = dict(((lookup_field, lookup_arg),))
 
-        review = session.query(MovieReview).filter_by(**query_kwarg).one()
+        try:
+            review = session.query(MovieReview).filter_by(**query_kwarg).one()
 
-        resp.media = movie_review_schema.dump(review).data
+            resp.media = movie_review_schema.dump(review).data
 
-        resp.status = HTTP_200
+            resp.status = HTTP_200
+        except NoResultFound:
+            resp.status = HTTP_404

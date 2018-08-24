@@ -1,6 +1,8 @@
 from falcon.media.validators import jsonschema
 from falcon import HTTP_409, HTTP_201, HTTP_401
+
 from sqlalchemy.sql import exists
+from sqlalchemy.orm.exc import NoResultFound
 
 from .schemas import user_schema
 from .models import User
@@ -36,7 +38,11 @@ class Token(object):
     @jsonschema.validate(user_schema)
     def on_post(self, req, resp):
         media = req.media.copy()
-        user = session.query(User).filter_by(username=media['username']).one()
+
+        try:
+            user = session.query(User).filter_by(username=media['username']).one()
+        except NoResultFound:
+            user = None
 
         if not (user and  user.check_password(media['password'])):
             resp.media = {

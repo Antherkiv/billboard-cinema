@@ -4,17 +4,19 @@ const getInitialState = () => {
   const isAuthenticated =
     window.localStorage.getItem('isAuthenticated') || false;
   return {
-    isAuthenticated
+    isAuthenticated,
+    myName: null
   };
 };
 const initialState = getInitialState();
 const config = {
   initialState,
   actionsCreators: {
-    setAuthenticated: isAuthenticated => {
+    setAuthenticated: (store, actions, isAuthenticated) => {
       window.localStorage.setItem('isAuthenticated', true);
       return { isAuthenticated };
-    }
+    },
+    setMyName: (store, actions, myName) => ({ myName })
   }
 };
 

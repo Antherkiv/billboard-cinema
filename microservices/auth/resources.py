@@ -1,5 +1,5 @@
 from falcon.media.validators import jsonschema
-from falcon import HTTP_409, HTTP_201, HTTP_401
+from falcon import HTTP_200, HTTP_201, HTTP_401, HTTP_409
 
 from sqlalchemy.sql import exists
 from sqlalchemy.orm.exc import NoResultFound
@@ -55,12 +55,24 @@ class Token(object):
 
         else:
             from jose import jwt
+            # FIXME: We need to provide a RSA KEY, for development porpouses  I don't
             token = jwt.encode({'user': str(user.id)}, 'dracula', algorithm='HS256')
             resp.set_cookie('access_token', token, domain='localhost')
 
             resp.media = {'access_token': token, 'token_type': 'Bearer'}
 
             resp.status = HTTP_201
+
+class WhoAmI(object):
+    def on_get(self, req, resp, jwt_claims):
+        user_id = jwt_claims['user']
+        try:
+            user = session.query(User).filter_by(id=user_id).one()
+            resp.media = {'full_name': user.full_name}
+            resp.status = HTTP_200
+        except NoResultFound:
+            resp.status = HTTP_401
+
 
 
 

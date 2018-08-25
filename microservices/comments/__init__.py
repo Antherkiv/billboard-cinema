@@ -13,7 +13,7 @@ def JSONEncoder_newdefault(self, o):
 
 JSONEncoder.default = JSONEncoder_newdefault
 
-
+# FIXME: We need to provide a RSA PUBLI KEY, for development porpouses  I don't
 jwt_checker = JwtChecker(
     secret='dracula',
     algorithm='HS256',

@@ -35,7 +35,7 @@ class MainNavbar extends React.Component {
   }
   render() {
     const {
-      props: { isAuthenticated },
+      props: { isAuthenticated, myName },
       state: { isOpen },
       toggle
     } = this;
@@ -57,7 +57,7 @@ class MainNavbar extends React.Component {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
-            {!isAuthenticated && (
+            {(!isAuthenticated && (
               <Fragment>
                 <LoginForm />
                 <NavItem>
@@ -66,7 +66,7 @@ class MainNavbar extends React.Component {
                   </NavLink>
                 </NavItem>
               </Fragment>
-            )}
+            )) || <NavLink tag={'div'}>{myName}</NavLink>}
             <NavItem>
               <NavLink href="https://github.com/Antherkiv/billboard-cinema">
                 <img src={githubLogo} width="24" />
@@ -80,9 +80,11 @@ class MainNavbar extends React.Component {
 }
 
 MainNavbar.propTypes = {
-  isAuthenticated: PropTypes.node
+  isAuthenticated: PropTypes.node,
+  myName: PropTypes.string
 };
 
-export default connect(({ isAuthenticated }) => ({
-  isAuthenticated
+export default connect(({ isAuthenticated, myName }) => ({
+  isAuthenticated,
+  myName
 }))(MainNavbar);

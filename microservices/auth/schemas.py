@@ -7,10 +7,13 @@ class UserSchema(ModelSchema):
         model = User
         sqla_session = session
 
-user_schema = {
+registration_user_schema = {
     'type': 'object',
     'properties': {
-        'username': {
+        'full_name': {
+            "type" : "string",
+        },
+        'email': {
             "type" : "string",
             "format" : "email"
         },
@@ -18,5 +21,20 @@ user_schema = {
             'type': 'string'
         },
     },
-    'required': ['username', 'password']
+    'required': ['full_name', 'email', 'password']
 }
+
+login_user_schema = {
+    'type': 'object',
+    'properties': {
+        'email': {
+            "type" : "string",
+            "format" : "email"
+        },
+        'password': {
+            'type': 'string'
+        },
+    },
+    'required': ['email', 'password']
+}
+

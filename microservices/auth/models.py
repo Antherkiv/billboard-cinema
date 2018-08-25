@@ -14,17 +14,19 @@ Base = declarative_base()
 
 class User(Base):
     id = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
-    username = Column(String, nullable=False)
+    full_name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
     _password = Column(String, nullable=False)
 
     __tablename__ = 'users'
 
-    def __init__(self, username, password):
-        self.username = username
+    def __init__(self, email, password, full_name):
+        self.email = email
+        self.full_name = full_name
         self.password = password
 
     def __repr__(self):
-        return '<User(username={self.username!r})>'.format(self=self)
+        return '<User(email={self.email!r})>'.format(self=self)
 
     @hybrid_property
     def password(self):

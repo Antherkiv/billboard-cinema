@@ -77,12 +77,7 @@ export default class MainCarousel extends PureComponent {
           onExited={this.onExited}
           key={item.src}
         >
-          <img
-            className="img-fluid"
-            style={{ maxHeight: 400, width: '100%' }}
-            src={item.src}
-            alt={item.altText}
-          />
+          <img className="d-block w-100" src={item.src} alt={item.altText} />
           <CarouselCaption
             captionText={item.caption}
             captionHeader={item.caption}

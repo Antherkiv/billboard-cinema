@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
+import axios from 'axios';
+import { withAlert } from 'react-alert';
 import {
   Row,
   Col,
@@ -16,6 +18,9 @@ import {
 } from 'reactstrap';
 
 import { EMAIL_REGEX } from '../Components/Login';
+import { actions } from '../../store';
+
+import Api from '../../Api';
 
 const initialValues = {
   email: '',
@@ -49,6 +54,36 @@ const validation = ({ fullName, email, password, passwordConfimation }) => {
   }
   return errors;
 };
+
+const onSubmit = (authBaseURL, alert, push, setAuthenticated) => (
+  { fullName, email, password },
+  { setSubmitting, setErrors }
+) =>
+  axios
+    .post(`${authBaseURL}/register`, {
+      full_name: fullName,
+      email,
+      password
+    })
+    .then(user => {
+      axios(`${authBaseURL}/token`, {
+        method: 'post',
+        data: {
+          email,
+          password
+        },
+        withCredentials: true
+      }).then(() => {
+        alert.success('El usuario se creó satisfactoriamente');
+        setAuthenticated(true);
+        push('/');
+        setSubmitting(false);
+      });
+    })
+    .catch(({ response: { data: { description } } }) => {
+      alert.error(description);
+      setSubmitting(false);
+    });
 
 const FormRender = ({
   values: { email, password, passwordConfimation, fullName },
@@ -146,7 +181,7 @@ FormRender.propTypes = {
   isSubmitting: PropTypes.bool
 };
 
-export default props => (
+export default withAlert(({ alert, history: { push } }) => (
   <Row className="h-100 align-items-center">
     <Col sm="12" md={{ size: 4, offset: 4 }}>
       <Card
@@ -155,12 +190,22 @@ export default props => (
         }}
       >
         <CardTitle>Registro</CardTitle>
-        <Formik
-          initialValues={initialValues}
-          validate={validation}
-          render={FormRender}
-        />
+        <Api.Consumer>
+          {value => (
+            <Formik
+              initialValues={initialValues}
+              validate={validation}
+              render={FormRender}
+              onSubmit={onSubmit(
+                value.authBaseURL,
+                alert,
+                push,
+                actions.setAuthenticated
+              )}
+            />
+          )}
+        </Api.Consumer>
       </Card>
     </Col>
   </Row>
-);
+));

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {
   Collapse,
@@ -13,8 +14,9 @@ import {
 import LoginForm from './Login';
 
 import githubLogo from '../../img/GitHub-Mark-Light-32px.png';
+import { connect } from '../../store';
 
-export default class MainNavbar extends React.Component {
+class MainNavbar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -33,6 +35,7 @@ export default class MainNavbar extends React.Component {
   }
   render() {
     const {
+      props: { isAuthenticated },
       state: { isOpen },
       toggle
     } = this;
@@ -42,7 +45,7 @@ export default class MainNavbar extends React.Component {
           background: 'rgba(0,0,0,0.7)',
           position: 'absolute',
           top: 0,
-          zIndex: 999,
+          zIndex: 10,
           width: '100%'
         }}
         dark
@@ -54,12 +57,16 @@ export default class MainNavbar extends React.Component {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
-            <LoginForm />
-            <NavItem>
-              <NavLink tag={Link} to="/register">
-                Registro
-              </NavLink>
-            </NavItem>
+            {!isAuthenticated && (
+              <Fragment>
+                <LoginForm />
+                <NavItem>
+                  <NavLink tag={Link} to="/register">
+                    Registro
+                  </NavLink>
+                </NavItem>
+              </Fragment>
+            )}
             <NavItem>
               <NavLink href="https://github.com/Antherkiv/billboard-cinema">
                 <img src={githubLogo} width="24" />
@@ -71,3 +78,11 @@ export default class MainNavbar extends React.Component {
     );
   }
 }
+
+MainNavbar.propTypes = {
+  isAuthenticated: PropTypes.node
+};
+
+export default connect(({ isAuthenticated }) => ({
+  isAuthenticated
+}))(MainNavbar);

@@ -1,7 +1,13 @@
 import React from 'react';
+import axios from 'axios';
+
+import { withAlert } from 'react-alert';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import { Button, Form, InputGroup, Input, InputGroupAddon } from 'reactstrap';
+
+import Api from '../../Api';
+import { actions } from '../../store';
 
 const initialValues = {
   email: '',
@@ -10,27 +16,45 @@ const initialValues = {
 
 export const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
-const validation = ({ email, password }) => {
+const validation = ({ loginEmail, loginPassword }) => {
   const errors = {};
 
-  if (typeof fullName === 'undefined') {
-    errors.fullName = 'Es requerido';
+  if (typeof loginEmail === 'undefined') {
+    errors.loginEmail = 'Es requerido';
+  } else if (!EMAIL_REGEX.test(loginEmail)) {
+    errors.loginEmail = 'No es un correo electronico';
   }
 
-  if (typeof email === 'undefined') {
-    errors.email = 'Es requerido';
-  } else if (!EMAIL_REGEX.test(email)) {
-    errors.email = 'No es un correo electronico';
-  }
-
-  if (typeof password === 'undefined') {
-    errors.password = 'Es requerido';
+  if (typeof loginPassword === 'undefined') {
+    errors.loginPassword = 'Es requerido';
   }
   return errors;
 };
 
+const onSubmit = (authBaseURL, alert, setAuthenticated) => (
+  { loginEmail: email, loginPassword: password },
+  { setSubmitting, setErrors }
+) =>
+  axios(`${authBaseURL}/token`, {
+    method: 'post',
+    data: {
+      email,
+      password
+    },
+    withCredentials: true
+  })
+    .then(() => {
+      alert.success('El usuario se ha logeado correctamente');
+      setAuthenticated(true);
+      setSubmitting(false);
+    })
+    .catch(({ response: { data: { description } } }) => {
+      alert.error(description);
+      setSubmitting(false);
+    });
+
 export const LoginFormRender = ({
-  values: { email, password },
+  values: { loginEmail, loginPassword },
   errors: { email: emailErr, password: passwordErr },
   touched,
   handleChange,
@@ -43,20 +67,20 @@ export const LoginFormRender = ({
       <Input
         placeholder="e-Mail"
         type="email"
-        name="email"
+        name="loginEmail"
         onChange={handleChange}
         onBlur={handleBlur}
-        value={email}
-        invalid={!!(touched.email && emailErr)}
+        value={loginEmail}
+        invalid={!!(touched.loginEmail && emailErr)}
       />
       <Input
         placeholder="Contraseña"
         type="password"
-        name="password"
+        name="loginPassword"
         onChange={handleChange}
         onBlur={handleBlur}
-        value={password}
-        invalid={!!(touched.password && passwordErr)}
+        value={loginPassword}
+        invalid={!!(touched.loginPassword && passwordErr)}
       />
 
       <InputGroupAddon addonType="append">
@@ -83,13 +107,18 @@ LoginFormRender.propTypes = {
   isSubmitting: PropTypes.bool
 };
 
-const Login = ({ className }) => (
-  <Formik
-    initialValues={initialValues}
-    validate={validation}
-    render={LoginFormRender}
-  />
-);
+const Login = withAlert(({ className, alert }) => (
+  <Api.Consumer>
+    {value => (
+      <Formik
+        initialValues={initialValues}
+        validate={validation}
+        render={LoginFormRender}
+        onSubmit={onSubmit(value.authBaseURL, alert, actions.setAuthenticated)}
+      />
+    )}
+  </Api.Consumer>
+));
 
 Login.propTypes = {
   className: PropTypes.string

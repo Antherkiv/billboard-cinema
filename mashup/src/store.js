@@ -13,7 +13,9 @@ const config = {
   initialState,
   actionsCreators: {
     setAuthenticated: (store, actions, isAuthenticated) => {
-      window.localStorage.setItem('isAuthenticated', true);
+      if (isAuthenticated !== false) {
+        window.localStorage.setItem('isAuthenticated', true);
+      }
       return { isAuthenticated };
     },
     setMyName: (store, actions, myName) => ({ myName })

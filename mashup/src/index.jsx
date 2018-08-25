@@ -9,7 +9,6 @@ import AlertTemplate from 'react-alert-template-basic';
 import App from './App';
 import Api, { apis } from './Api';
 import { Provider as StoreProvider } from './store';
-import { getUserName } from './tools';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -33,5 +32,3 @@ const Root = () => (
 );
 
 ReactDOM.render(<Root />, document.getElementById('root'));
-
-getUserName();

@@ -1,15 +1,26 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import MainNavBar from './Components/MainNavbar';
 import Routes from './Routes';
+import { getUserName } from '../tools';
 
-const App = ({ children }) => (
-  <Fragment>
-    <MainNavBar />
-    <Routes />
-    {children}
-  </Fragment>
-);
+class App extends PureComponent {
+  componentDidMount() {
+    getUserName();
+  }
+  render() {
+    const {
+      props: { children }
+    } = this;
+    return (
+      <Fragment>
+        <MainNavBar />
+        <Routes />
+        {children}
+      </Fragment>
+    );
+  }
+}
 
 App.propTypes = {
   children: PropTypes.node

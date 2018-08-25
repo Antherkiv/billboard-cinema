@@ -10,9 +10,9 @@ import {
   NavLink
 } from 'reactstrap';
 
-import LoginForm from './Containers/Login';
+import LoginForm from './Login';
 
-import githubLogo from '../img/GitHub-Mark-Light-32px.png';
+import githubLogo from '../../img/GitHub-Mark-Light-32px.png';
 
 export default class MainNavbar extends React.Component {
   constructor(props) {

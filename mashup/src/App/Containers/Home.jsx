@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { Container } from 'reactstrap';
-import MainCarousel from './MainCarousel';
-import MovieList from './MovieList';
+
+import MainCarousel from '../Components/MainCarousel';
+import MovieList from '../Components/MovieList';
 
 export default () => (
   <Fragment>

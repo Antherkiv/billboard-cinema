@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import MainNavBar from './MainNavbar';
+import MainNavBar from './Components/MainNavbar';
 import Routes from './Routes';
 
 const App = ({ children }) => (

@@ -15,7 +15,7 @@ import {
   FormFeedback
 } from 'reactstrap';
 
-import { EMAIL_REGEX } from './Login';
+import { EMAIL_REGEX } from '../Components/Login';
 
 const initialValues = {
   email: '',

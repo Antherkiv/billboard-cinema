@@ -21,6 +21,7 @@ import { EMAIL_REGEX } from '../Components/Login';
 import { actions } from '../../store';
 
 import Api from '../../Api';
+import { getUserName } from '../../tools';
 
 const initialValues = {
   email: '',
@@ -76,6 +77,7 @@ const onSubmit = (authBaseURL, alert, push, setAuthenticated) => (
       }).then(() => {
         alert.success('El usuario se creó satisfactoriamente');
         setAuthenticated(true);
+        getUserName();
         push('/');
         setSubmitting(false);
       });

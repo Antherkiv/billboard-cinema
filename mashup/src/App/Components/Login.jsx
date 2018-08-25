@@ -8,6 +8,7 @@ import { Button, Form, InputGroup, Input, InputGroupAddon } from 'reactstrap';
 
 import Api from '../../Api';
 import { actions } from '../../store';
+import { getUserName } from '../../tools';
 
 const initialValues = {
   email: '',
@@ -46,6 +47,7 @@ const onSubmit = (authBaseURL, alert, setAuthenticated) => (
     .then(() => {
       alert.success('El usuario se ha logeado correctamente');
       setAuthenticated(true);
+      getUserName();
       setSubmitting(false);
     })
     .catch(({ response: { data: { description } } }) => {

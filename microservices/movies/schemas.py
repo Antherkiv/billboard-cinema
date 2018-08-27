@@ -24,8 +24,8 @@ movie_json_schema = {
     'properties': {
         'synopsis': {
             'type': 'string',
-            "minLength": 50,
-            "maxLength": 500
+            "minLength": 15,
+            "maxLength": 500,
         },
         'title': {
             'type': 'string',

@@ -200,7 +200,13 @@ export default class MoviesAdminPanel extends PureComponent {
         alert.success('La entrada se ha creado éxitosamente');
         push('/');
       })
-      .catch(() => alert.err('No ha sido posible crear la entrada.'));
+      .catch(err => {
+        if (err.response && err.response.data) {
+          alert.error(err.response.data.description);
+        } else {
+          alert.error('No ha sido posible crear la entrada.');
+        }
+      });
   }
 
   render() {

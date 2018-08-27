@@ -1,6 +1,6 @@
 Billboard cinema
 ---
-# NOTE: falcon-jwt-checker must be install from my fork to actually works (it's on requeriments.py)
+### NOTE: falcon-jwt-checker must be install from my fork to actually works (it's on requeriments.py)
 >> pip install git+https://github.com/Antherkiv/falcon-jwt-checker.git
 This it's intended to be a monorepo that stores microservices written in python and a pure ES mashup:
 

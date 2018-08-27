@@ -176,14 +176,15 @@ export default class MoviesAdminPanel extends PureComponent {
 
     if (
       !poster ||
-      titleValue.document.empty ||
-      synopsisValue.document.empty ||
-      reviewValue.document.empty ||
+      titleValue.document.isEmpty() ||
+      synopsisValue.document.isEmpty() ||
+      reviewValue.document.isEmpty() ||
       !releaseDate
     ) {
       alert.error(
         'Necesitas escribir un título, proveer una portada, sinopsis, una fecha de lanzamiento y review para proceder'
       );
+      return;
     }
     const data = {
       poster: poster,

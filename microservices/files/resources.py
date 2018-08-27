@@ -8,7 +8,7 @@ from falcon import HTTP_201, HTTP_200, HTTP_404
 class Files(object):
     def __init__(self, *args, **kwargs):
         import os
-        self.server_url = 'http://localhost:8004'
+        self.server_url = 'http://localhost:8003'
         self.base_file_url = os.path.dirname(os.path.realpath(__file__))
 
     def get_base_path(self, user):
@@ -43,7 +43,7 @@ class Files(object):
 
             resp.media = {
                 'file_url':
-                '{server_url}/{user}/{relative_path}'.format(
+                '{server_url}/{user}{relative_path}'.format(
                     server_url=self.server_url, user=user, relative_path=relative_path)
             }  # NOTE IT'S A MOCKUP URL
 

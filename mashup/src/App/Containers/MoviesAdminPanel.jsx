@@ -9,17 +9,22 @@ import {
   Row,
   Col,
   Button,
-  Navbar,
-  Input
+  Navbar
 } from 'reactstrap';
 
 import Dropzone from 'react-dropzone';
 
+import Plain from 'slate-plain-serializer';
 import { Value } from 'slate';
 
 import { Editor } from 'slate-react';
 
 import classNames from 'classnames';
+
+import pluginTitleBody from '../../tools/slate-plugins/slate-title-body';
+
+const titleBodyPlugin = pluginTitleBody();
+const reviewPlugins = [titleBodyPlugin];
 
 const initialValue = {
   document: {
@@ -38,13 +43,30 @@ const initialValue = {
   }
 };
 
+const renderNode = props => {
+  const { attributes, children, node } = props;
+
+  switch (node.type) {
+    case 'image': {
+      const src = node.data.get('src');
+      return <image src={src} {...attributes} />;
+    }
+    case 'title':
+      return <h2 {...attributes}>{children}</h2>;
+    case 'body':
+      return <div>{children}</div>;
+    case 'paragraph':
+      return <p {...attributes}>{children}</p>;
+  }
+};
+
 const uploadImages = (filesApi, file, fileName, size, callback) => {
   return axios(`${filesApi}/${fileName}`, {
     method: 'post',
     data: file,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      ACCEPT: '*/*'
+      Accept: '*/*'
     },
     withCredentials: true
   }).then(callback);
@@ -56,11 +78,13 @@ export default class MoviesAdminPanel extends PureComponent {
     this.toggle = this.toggle.bind(this);
     this.onChangeReview = this.onChangeReview.bind(this);
     this.onChangeSynopsis = this.onChangeSynopsis.bind(this);
+    this.onChangeTitle = this.onChangeTitle.bind(this);
     this.onDrop = this.onDrop.bind(this);
 
     this.state = {
+      titleValue: Plain.deserialize(''),
+      synopsisValue: Plain.deserialize(''),
       reviewValue: Value.fromJSON(initialValue),
-      synopsisValue: Value.fromJSON(initialValue),
       activeTab: '1'
     };
   }
@@ -92,13 +116,17 @@ export default class MoviesAdminPanel extends PureComponent {
           file.name,
           file.size,
           ({ data: { file_url: fileURL } }) =>
-            _this.setState(() => ({
+            _this.setState({
               portrait: fileURL
-            }))
+            })
         );
       };
       reader.readAsArrayBuffer(file);
     });
+  }
+
+  onChangeTitle({ value: titleValue }) {
+    this.setState({ titleValue });
   }
 
   onChangeReview({ value: reviewValue }) {
@@ -111,9 +139,10 @@ export default class MoviesAdminPanel extends PureComponent {
 
   render() {
     const {
-      state: { reviewValue, synopsisValue, portrait },
+      state: { reviewValue, synopsisValue, titleValue, portrait },
       onChangeSynopsis,
       onChangeReview,
+      onChangeTitle,
       onDrop
     } = this;
     console.log(portrait);
@@ -150,38 +179,45 @@ export default class MoviesAdminPanel extends PureComponent {
         </Navbar>
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId="1">
-            <Input placeholder="Escriba un título..." />
+            <div className="d-flex justify-content-between">
+              <h1>
+                <Editor
+                  value={titleValue}
+                  onChange={onChangeTitle}
+                  placeholder={
+                    <p className="font-weight-bold">Escriba un título..</p>
+                  }
+                />
+              </h1>
+            </div>
+            <hr />
             <Row className="ml-1 mr-1">
-              <Col sm="12">
-                <Row>
-                  <Col sm="12">
-                    <Dropzone
-                      onDrop={onDrop}
-                      style={{ height: '40%' }}
-                      accept="image/jpeg, image/png"
-                    >
-                      {!portrait &&
-                        ((
-                          <div className="justify-content-center align-items-center">
-                            <p>Aroje la portada aquí</p>
-                            <p>O añadala con doble click</p>
-                          </div>
-                        ) || <img className="img-fluid" src={portrait} />)}
-                    </Dropzone>
-                    <hr />
-                    <div className="mt-2">
-                      <Editor
-                        value={synopsisValue}
-                        onChange={onChangeSynopsis}
-                        placeholder={
-                          <p className="font-weight-bold">
-                            "Comience a esribir la sinopsis..."{' '}
-                          </p>
-                        }
-                      />
+              <Col sm="12" md="6">
+                <Dropzone
+                  onDrop={onDrop}
+                  style={{ height: '40%' }}
+                  accept="image/jpeg, image/png"
+                >
+                  {(!portrait && (
+                    <div className="justify-content-center align-items-center">
+                      <p>Aroje la portada aquí</p>
+                      <p>O añadala con doble click</p>
                     </div>
-                  </Col>
-                </Row>
+                  )) || (
+                    <img
+                      className="img-fluid"
+                      src={portrait}
+                      style={{ width: '100%' }}
+                    />
+                  )}
+                </Dropzone>
+              </Col>
+              <Col sm="12" md="6">
+                <Editor
+                  value={synopsisValue}
+                  onChange={onChangeSynopsis}
+                  placeholder={<p className="font-weight-bold">Sinopsis...</p>}
+                />
               </Col>
             </Row>
           </TabPane>
@@ -189,10 +225,17 @@ export default class MoviesAdminPanel extends PureComponent {
             <div className="mx-auto" style={{ width: '90%' }}>
               <Editor
                 value={reviewValue}
+                plugins={reviewPlugins}
                 onChange={onChangeReview}
+                renderNode={renderNode}
                 placeholder={
                   <p className="font-weight-bold">
-                    Comience a esribir una reseña...
+                    Comience a esribir una título para la reseña...
+                  </p>
+                }
+                contentPlaceholder={
+                  <p className="font-weight-bold">
+                    Comience a esribir una la reseña...
                   </p>
                 }
               />

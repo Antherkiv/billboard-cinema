@@ -1,4 +1,5 @@
 from falcon import API
+from utils.middlewares import CORS
 from falcon_jwt_checker import JwtChecker
 
 from json import JSONEncoder
@@ -21,7 +22,7 @@ jwt_checker = JwtChecker(
     exempt_methods=['GET'],
 )
 
-api = API(middleware=[jwt_checker])
+api = API(middleware=[CORS(), jwt_checker])
 api.add_route('/{file_name}.{ext}', Files())
 api.add_route('/{user}/{file_name}.{ext}', Files())
 

@@ -1,10 +1,10 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import MainNavBar from './Components/MainNavbar';
 import Routes from './Routes';
 import { getUserName } from '../tools';
 
-class App extends PureComponent {
+class App extends Component {
   componentDidMount() {
     getUserName();
   }

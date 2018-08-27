@@ -1,6 +1,6 @@
 Billboard cinema
 ---
-First at all, this project is building and not completed yet.
+I have a bug in the url match just reload please.
 
 It's intended to be a monorepo that stores microservices written in python:
 

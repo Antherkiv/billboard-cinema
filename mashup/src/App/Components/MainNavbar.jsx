@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {
@@ -16,7 +16,13 @@ import LoginForm from './Login';
 import githubLogo from '../../img/GitHub-Mark-Light-32px.png';
 import { connect } from '../../store';
 
-class MainNavbar extends React.Component {
+class UpdateBlocker extends PureComponent {
+  render() {
+    return this.props.children;
+  }
+}
+
+class MainNavbar extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -51,29 +57,38 @@ class MainNavbar extends React.Component {
         dark
         expand="md"
       >
-        <NavbarBrand tag={Link} to="/">
-          Cinema
-        </NavbarBrand>
-        <NavbarToggler onClick={toggle} />
-        <Collapse isOpen={isOpen} navbar>
-          <Nav className="ml-auto" navbar>
-            {(!isAuthenticated && (
-              <Fragment>
-                <LoginForm />
-                <NavItem>
-                  <NavLink tag={Link} to="/register">
-                    Registro
+        <UpdateBlocker>
+          <NavbarBrand tag={Link} to="/">
+            Cinema
+          </NavbarBrand>
+          <NavbarToggler onClick={toggle} />
+          <Collapse isOpen={isOpen} navbar>
+            <Nav className="ml-auto" navbar>
+              {(!isAuthenticated && (
+                <Fragment>
+                  <LoginForm />
+                  <NavItem>
+                    <NavLink tag={Link} to="/register">
+                      Registro
+                    </NavLink>
+                  </NavItem>
+                </Fragment>
+              )) || (
+                <Fragment>
+                  <NavLink tag={'div'}>{myName}</NavLink>
+                  <NavLink tag={Link} to="/admin-panel">
+                    Admin Panel
                   </NavLink>
-                </NavItem>
-              </Fragment>
-            )) || <NavLink tag={'div'}>{myName}</NavLink>}
-            <NavItem>
-              <NavLink href="https://github.com/Antherkiv/billboard-cinema">
-                <img src={githubLogo} width="24" />
-              </NavLink>
-            </NavItem>
-          </Nav>
-        </Collapse>
+                </Fragment>
+              )}
+              <NavItem>
+                <NavLink href="https://github.com/Antherkiv/billboard-cinema">
+                  <img src={githubLogo} width="24" />
+                </NavLink>
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </UpdateBlocker>
       </Navbar>
     );
   }

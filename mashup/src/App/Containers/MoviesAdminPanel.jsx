@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import {
   TabContent,
   TabPane,
@@ -29,7 +30,7 @@ import pluginTitleBody from '../../tools/slate-plugins/slate-title-body';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-const initialValue = {
+export const initialValue = {
   document: {
     nodes: [
       {
@@ -46,7 +47,7 @@ const initialValue = {
   }
 };
 
-const renderNode = props => {
+export const renderNode = props => {
   const { attributes, children, node } = props;
 
   switch (node.type) {
@@ -82,11 +83,11 @@ const InsertImagesPlugin = InsertImages({
     return transform.insertBlock({
       type: 'image',
       isVoid: true,
-      data: { file }
+      data: { src: file }
     });
   }
 });
-const reviewPlugins = [titleBodyPlugin, InsertImagesPlugin];
+export const reviewPlugins = [titleBodyPlugin, InsertImagesPlugin];
 
 export default class MoviesAdminPanel extends PureComponent {
   constructor(props) {
@@ -326,3 +327,10 @@ export default class MoviesAdminPanel extends PureComponent {
     );
   }
 }
+
+MoviesAdminPanel.propTypes = {
+  filesApi: PropTypes.string,
+  alert: PropTypes.function,
+  moviesApi: PropTypes.string,
+  history: PropTypes.object
+};

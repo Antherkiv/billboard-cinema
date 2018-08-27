@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import Masonry from 'react-gestalt-masonry';
 import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 
@@ -7,13 +8,15 @@ import { fetchEntries } from '../Containers/Home';
 
 const MovieItem = ({ data }) => {
   return (
-    <Card>
-      <CardImg top src={data.poster} alt="Card image cap" />
-      <CardBody>
-        <CardTitle>{data.title}</CardTitle>
-        <CardText>{data.synopsis}</CardText>
-      </CardBody>
-    </Card>
+    <Link to={`/${data.slug}/review`} key={data.id}>
+      <Card>
+        <CardImg top src={data.poster} alt="Card image cap" />
+        <CardBody>
+          <CardTitle>{data.title}</CardTitle>
+          <CardText>{data.synopsis}</CardText>
+        </CardBody>
+      </Card>
+    </Link>
   );
 };
 

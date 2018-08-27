@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Redirect } from 'react-router';
 
 import MoviesAdminPanel from './Containers/MoviesAdminPanel';
+import MoviesReview from './Containers/MoviesReview';
 import Registration from './Containers/Registration';
 import { connect } from '../store';
 import Api from '../Api';
@@ -63,11 +64,23 @@ const HomeRender = props => (
   </Api.Consumer>
 );
 
+const ReviewRender = props => (
+  <Api.Consumer>
+    {value =>
+      React.createElement(
+        MoviesReview,
+        Object.assign({}, props, { moviesApi: value.moviesBaseURL })
+      )
+    }
+  </Api.Consumer>
+);
+
 export default () => (
   <Switch>
     <Route exact path="/" render={HomeRender} />
+    <Route exact path="/:param/review/" render={ReviewRender} />
     <Route exact path="/admin-panel" render={RenderMoviesAdminPanel} />
-    <Route path="/register" render={RenderRegistration} />
+    <Route exact path="/register" render={RenderRegistration} />
     <Route component={NoMatch} />
   </Switch>
 );

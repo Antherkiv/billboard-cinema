@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { Provider as AlertProvider } from 'react-alert';
 
-import AlertTemplate from 'react-alert-template-basic';
+import AlertTemplate from 'react-alert-template-oldschool-dark';
 
 import App from './App';
 import Api, { apis } from './Api';

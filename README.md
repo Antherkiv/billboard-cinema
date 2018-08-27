@@ -1,8 +1,6 @@
 Billboard cinema
 ---
-I have a bug in the url match just reload please.
-
-It's intended to be a monorepo that stores microservices written in python:
+This it's intended to be a monorepo that stores microservices written in python and a pure ES mashup:
 
 1. Registration and authentication
 2. Movie description
@@ -18,7 +16,7 @@ The server it's implemented with:
 5. Argon hasher
 6. Etc.
 
-The mashup:
+Mashup:
 
 1. ES6 - ES7 as loading language
 2. React as render engine
@@ -30,7 +28,6 @@ The mashup:
 9. React date picker
 10. React drop zone
 11. Axios and so...
-
 
 
 Steps:

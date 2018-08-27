@@ -2,6 +2,9 @@ Billboard cinema
 ---
 ### NOTE: falcon-jwt-checker must be install from my fork to actually works (it's on requeriments.py)
 >> pip install git+https://github.com/Antherkiv/falcon-jwt-checker.git
+
+It remains to add security policies use a RSA key instead a string on JWTs, and do tests with owasp zap.
+
 This it's intended to be a monorepo that stores microservices written in python and a pure ES mashup:
 
 1. Registration and authentication

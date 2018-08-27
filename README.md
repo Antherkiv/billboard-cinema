@@ -65,10 +65,33 @@ That's it, we are done on microservices
 ```console
 	(1:00:01) ~/billboard-cinema ❯❯❯  cd mashup && npm install && npm start (It will give us a server on htp://localhost:1234)
 ```
-9. Do the register (the link is on the top panel)
-10. Enter and go to admin panel:
+9. Do the bootstraping of initial state
+```console
+	(1:05:01) ~/billboard-cinema ❯❯❯  cd sql
+```
+First the users db:
+```console
+	(1:06:46) ~/billboard-cinema ❯❯❯  pg_dump -U postgres db < db.sql
+
+```
+Movies db:
+```console
+	(1:06:46) ~/billboard-cinema ❯❯❯  pg_dump -U postgres movies < movies.sql
+
+```
+
+Comments db:
+```console
+	(1:06:46) ~/billboard-cinema ❯❯❯  pg_dump -U postgres comments < comments.sql
+
+```
+The "admin user" is "antherkiv@gmail.com"
+The password is "admin"
+
+10. Do the register (the link is on the top panel)
+11. Enter and go to admin panel:
 > http://localhost:1234/admin-panel
-11. We are done
+12. We are done
 
 
 

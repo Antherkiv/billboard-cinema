@@ -31,6 +31,11 @@ movie_json_schema = {
             'type': 'string',
             "maxLength": 50
         },
+        'poster': {
+            'type': 'string',
+            "format": "url"
+
+        },
         'review': {
             'type':'object'
         },
@@ -39,5 +44,5 @@ movie_json_schema = {
             'format': "date-time",
         },
     },
-    'required': ['synopsis', 'title', 'review', 'release_date']
+    'required': ['synopsis', 'title', 'review', 'release_date', 'poster']
 }

@@ -14,17 +14,20 @@ import {
 
 import Dropzone from 'react-dropzone';
 
+import InsertImages from 'slate-drop-or-paste-images';
 import Plain from 'slate-plain-serializer';
 import { Value } from 'slate';
 
 import { Editor } from 'slate-react';
 
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
 import classNames from 'classnames';
 
 import pluginTitleBody from '../../tools/slate-plugins/slate-title-body';
 
-const titleBodyPlugin = pluginTitleBody();
-const reviewPlugins = [titleBodyPlugin];
+import 'react-datepicker/dist/react-datepicker.css';
 
 const initialValue = {
   document: {
@@ -72,6 +75,19 @@ const uploadImages = (filesApi, file, fileName, size, callback) => {
   }).then(callback);
 };
 
+const titleBodyPlugin = pluginTitleBody();
+const InsertImagesPlugin = InsertImages({
+  extensions: ['png'],
+  insertImage: (transform, file) => {
+    return transform.insertBlock({
+      type: 'image',
+      isVoid: true,
+      data: { file }
+    });
+  }
+});
+const reviewPlugins = [titleBodyPlugin, InsertImagesPlugin];
+
 export default class MoviesAdminPanel extends PureComponent {
   constructor(props) {
     super(props);
@@ -79,13 +95,17 @@ export default class MoviesAdminPanel extends PureComponent {
     this.onChangeReview = this.onChangeReview.bind(this);
     this.onChangeSynopsis = this.onChangeSynopsis.bind(this);
     this.onChangeTitle = this.onChangeTitle.bind(this);
+    this.onChangeReleaseDate = this.onChangeReleaseDate.bind(this);
     this.onDrop = this.onDrop.bind(this);
+    this.onSave = this.onSave.bind(this);
 
     this.state = {
+      poster: '',
       titleValue: Plain.deserialize(''),
       synopsisValue: Plain.deserialize(''),
       reviewValue: Value.fromJSON(initialValue),
-      activeTab: '1'
+      activeTab: '1',
+      releaseDate: moment()
     };
   }
 
@@ -107,7 +127,7 @@ export default class MoviesAdminPanel extends PureComponent {
       const _this = this;
       reader.onload = () => {
         _this.setState(() => ({
-          portrait: file.preview
+          poster: file.preview
         }));
         const fileAsBinaryString = reader.result;
         uploadImages(
@@ -117,7 +137,7 @@ export default class MoviesAdminPanel extends PureComponent {
           file.size,
           ({ data: { file_url: fileURL } }) =>
             _this.setState({
-              portrait: fileURL
+              poster: fileURL
             })
         );
       };
@@ -137,15 +157,62 @@ export default class MoviesAdminPanel extends PureComponent {
     this.setState({ synopsisValue });
   }
 
+  onChangeReleaseDate(date) {
+    this.setState({
+      releaseDate: date
+    });
+  }
+
+  onSave() {
+    const {
+      state: { poster, titleValue, synopsisValue, reviewValue, releaseDate },
+      props: {
+        alert,
+        moviesApi,
+        history: { push }
+      }
+    } = this;
+    debugger;
+    if (
+      !poster ||
+      titleValue.document.empty ||
+      synopsisValue.document.empty ||
+      reviewValue.document.empty ||
+      !releaseDate
+    ) {
+      alert.error(
+        'Necesitas escribir un título, proveer una portada, sinopsis, una fecha de lanzamiento y review para proceder'
+      );
+    }
+    const data = {
+      poster: poster,
+      synopsis: Plain.serialize(synopsisValue),
+      title: Plain.serialize(titleValue),
+      release_date: releaseDate,
+      review: reviewValue.toJSON()
+    };
+    return axios(`${moviesApi}/movies`, {
+      method: 'post',
+      data,
+      withCredentials: true
+    })
+      .then(() => {
+        alert.success('La entrada se ha creado éxitosamente');
+        push('/');
+      })
+      .catch(({ response: { data: { detail } } }) => alert.err(detail));
+  }
+
   render() {
     const {
-      state: { reviewValue, synopsisValue, titleValue, portrait },
+      state: { reviewValue, synopsisValue, titleValue, poster, releaseDate },
       onChangeSynopsis,
       onChangeReview,
       onChangeTitle,
-      onDrop
+      onChangeReleaseDate,
+      onDrop,
+      onSave
     } = this;
-    console.log(portrait);
     return (
       <div style={{ marginTop: 55 }}>
         <Navbar>
@@ -173,23 +240,30 @@ export default class MoviesAdminPanel extends PureComponent {
           </Nav>
           <Nav>
             <NavItem>
-              <Button>Guardar</Button>
+              <NavLink
+                tag={DatePicker}
+                selected={releaseDate}
+                onChange={onChangeReleaseDate}
+              />
+            </NavItem>
+            <NavItem className="ml-1">
+              <NavLink tag={Button} onClick={onSave}>
+                Guardar
+              </NavLink>
             </NavItem>
           </Nav>
         </Navbar>
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId="1">
-            <div className="d-flex justify-content-between">
-              <h1>
-                <Editor
-                  value={titleValue}
-                  onChange={onChangeTitle}
-                  placeholder={
-                    <p className="font-weight-bold">Escriba un título..</p>
-                  }
-                />
-              </h1>
-            </div>
+            <h1>
+              <Editor
+                value={titleValue}
+                onChange={onChangeTitle}
+                placeholder={
+                  <p className="font-weight-bold">Escriba un título..</p>
+                }
+              />
+            </h1>
             <hr />
             <Row className="ml-1 mr-1">
               <Col sm="12" md="6">
@@ -198,7 +272,7 @@ export default class MoviesAdminPanel extends PureComponent {
                   style={{ height: '40%' }}
                   accept="image/jpeg, image/png"
                 >
-                  {(!portrait && (
+                  {(!poster && (
                     <div className="justify-content-center align-items-center">
                       <p>Aroje la portada aquí</p>
                       <p>O añadala con doble click</p>
@@ -206,7 +280,7 @@ export default class MoviesAdminPanel extends PureComponent {
                   )) || (
                     <img
                       className="img-fluid"
-                      src={portrait}
+                      src={poster}
                       style={{ width: '100%' }}
                     />
                   )}

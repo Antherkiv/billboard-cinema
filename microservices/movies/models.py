@@ -13,7 +13,7 @@ Base = declarative_base()
 
 class Movie(Base):
     id = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
-    poster = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
+    poster = Column(String, nullable=False)
     synopsis = Column(String, nullable=False)
     slug = Column(String, nullable=False, unique=True)
     title = Column(String, nullable=False, unique=True)

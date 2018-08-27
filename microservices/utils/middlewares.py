@@ -15,7 +15,7 @@ class CORS(object):
             allow = resp.get_header('Allow')
             resp.delete_header('Allow')
 
-            # Allow all sources for a fast implementation
+            # Allow all headers for a fast implementation
             allow_headers = req.get_header(
                 'Access-Control-Request-Headers',
                 default='*'

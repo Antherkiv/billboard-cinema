@@ -1,5 +1,6 @@
 from falcon import API
 from falcon_jwt_checker import JwtChecker
+from utils.middlewares import CORS
 
 from json import JSONEncoder
 from uuid import UUID
@@ -21,7 +22,7 @@ jwt_checker = JwtChecker(
     exempt_methods=['GET'],
 )
 
-api = API(middleware=[jwt_checker])
+api = API(middleware=[CORS(), jwt_checker])
 api.add_route('/movies', Movies())
 api.add_route('/movies/{lookup_arg}/review', MovieReviews())
 

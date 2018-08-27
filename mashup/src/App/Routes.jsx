@@ -32,7 +32,15 @@ const AdminPanelComponent = withAlert(props => {
   if (props.isAuthenticated) {
     return (
       <Api.Consumer>
-        {value => <MoviesAdminPanel filesApi={value.filesBaseURL} />}
+        {value =>
+          React.createElement(
+            MoviesAdminPanel,
+            Object.assign({}, props, {
+              filesApi: value.filesBaseURL,
+              moviesApi: value.moviesBaseURL
+            })
+          )
+        }
       </Api.Consumer>
     );
   }

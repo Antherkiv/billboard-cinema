@@ -14,7 +14,7 @@ jwt_checker = JwtChecker(
 
 api = API(middleware=[CORS(), jwt_checker])
 
-# FIXME: remove this on production mode it's only for development pourposes
+# FIXME: remove this directive on production mode, it's only for development pourposes
 api.resp_options.secure_cookies_by_default = False
 
 api.add_route('/register', Registration())

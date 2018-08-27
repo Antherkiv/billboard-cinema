@@ -52,9 +52,20 @@ const RenderMoviesAdminPanel = connect(({ isAuthenticated }) => ({
   isAuthenticated
 }))(AdminPanelComponent);
 
+const HomeRender = props => (
+  <Api.Consumer>
+    {value =>
+      React.createElement(
+        Home,
+        Object.assign({}, props, { moviesApi: value.moviesBaseURL })
+      )
+    }
+  </Api.Consumer>
+);
+
 export default () => (
   <Switch>
-    <Route exact path="/" component={Home} />
+    <Route exact path="/" render={HomeRender} />
     <Route exact path="/admin-panel" render={RenderMoviesAdminPanel} />
     <Route path="/register" render={RenderRegistration} />
     <Route component={NoMatch} />

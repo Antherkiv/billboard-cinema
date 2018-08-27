@@ -1,57 +1,60 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Masonry from 'react-gestalt-masonry';
-import loremIpsum from 'lorem-ipsum';
-import {
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
-  CardTitle,
-  CardSubtitle
-} from 'reactstrap';
+import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 
-const MovieItem = ({ data }) => (
-  <Card>
-    <CardImg top src={data.image} alt="Card image cap" />
-    <CardBody>
-      <CardTitle>{data.title}</CardTitle>
-      <CardSubtitle>{data.subtile}</CardSubtitle>
-      <CardText>{data.description}</CardText>
-    </CardBody>
-  </Card>
-);
+import { fetchEntries } from '../Containers/Home';
+
+const MovieItem = ({ data }) => {
+  return (
+    <Card>
+      <CardImg top src={data.poster} alt="Card image cap" />
+      <CardBody>
+        <CardTitle>{data.title}</CardTitle>
+        <CardText>{data.synopsis}</CardText>
+      </CardBody>
+    </Card>
+  );
+};
 
 MovieItem.propTypes = {
   data: PropTypes.object.isRequired
 };
 
 export default class MovieList extends PureComponent {
+  static getDerivedStateFromProps({ items }) {
+    return {
+      items: items,
+      offset: 10,
+      limit: 20
+    };
+  }
+
   constructor(props) {
     super(props);
-
     this.loadItems = this.loadItems.bind(this);
-
-    this.state = {
-      items: []
-    };
+    this.state = { items: [] };
   }
 
   loadItems() {
     const {
-      state: { items }
+      props: { moviesApi },
+      state: { items, offset, limit }
     } = this;
-    const newItems = Array.from({ length: 10 }, () => ({
-      image: `https://picsum.photos/${Math.floor(Math.random() * 600) +
-        300}/1000/?random`,
-      description: loremIpsum(),
-      title: loremIpsum(),
-      subtitle: loremIpsum()
-    }));
-    console.log(newItems);
-    this.setState({
-      items: items.concat(newItems)
-    });
+    if (!items && offset === 10 && limit === 10) {
+      return;
+    }
+    fetchEntries(
+      moviesApi,
+      ({ data: { result } }) =>
+        this.setState({
+          items: items.concat(result),
+          offset: offset + 10,
+          limit: limit + 10
+        }),
+      offset,
+      limit
+    );
   }
 
   render() {
@@ -73,3 +76,7 @@ export default class MovieList extends PureComponent {
     );
   }
 }
+
+MovieList.propTypes = {
+  moviesApi: PropTypes.string
+};

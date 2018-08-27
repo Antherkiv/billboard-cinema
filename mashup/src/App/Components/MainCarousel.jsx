@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import {
   Carousel,
   CarouselItem,
@@ -7,33 +8,15 @@ import {
   CarouselCaption
 } from 'reactstrap';
 
-const items = [
-  {
-    src: 'https://picsum.photos/1020/500/?random',
-    altText: 'Slide 1',
-    caption: 'Butacas de cine'
-  },
-  {
-    src: 'https://picsum.photos/1010/500/?random',
-    altText: 'Slide 2',
-    caption: 'Slide 2'
-  },
-  {
-    src: 'https://picsum.photos/1000/500/?random',
-    altText: 'Slide 3',
-    caption: 'Slide 3'
-  }
-];
-
 export default class MainCarousel extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { activeIndex: 0 };
     this.next = this.next.bind(this);
     this.previous = this.previous.bind(this);
     this.goToIndex = this.goToIndex.bind(this);
     this.onExiting = this.onExiting.bind(this);
     this.onExited = this.onExited.bind(this);
+    this.state = { activeIndex: 0 };
   }
 
   onExiting() {
@@ -45,6 +28,9 @@ export default class MainCarousel extends PureComponent {
   }
 
   next() {
+    const {
+      props: { items }
+    } = this;
     if (this.animating) return;
     const nextIndex =
       this.state.activeIndex === items.length - 1
@@ -54,6 +40,9 @@ export default class MainCarousel extends PureComponent {
   }
 
   previous() {
+    const {
+      props: { items }
+    } = this;
     if (this.animating) return;
     const nextIndex =
       this.state.activeIndex === 0
@@ -69,18 +58,21 @@ export default class MainCarousel extends PureComponent {
 
   render() {
     const { activeIndex } = this.state;
+    const {
+      props: { items }
+    } = this;
 
     const slides = items.map(item => {
       return (
         <CarouselItem
+          key={item.id}
           onExiting={this.onExiting}
           onExited={this.onExited}
-          key={item.src}
         >
-          <img className="d-block w-100" src={item.src} alt={item.altText} />
+          <img className="d-block w-100" src={item.poster} alt={item.altText} />
           <CarouselCaption
-            captionText={item.caption}
-            captionHeader={item.caption}
+            captionText={item.synopsis}
+            captionHeader={item.title}
           />
         </CarouselItem>
       );
@@ -112,3 +104,11 @@ export default class MainCarousel extends PureComponent {
     );
   }
 }
+
+MainCarousel.defaultProps = {
+  items: []
+};
+
+MainCarousel.propTypes = {
+  items: PropTypes.array
+};

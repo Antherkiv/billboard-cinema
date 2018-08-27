@@ -1,5 +1,7 @@
 Billboard cinema
 ---
+# NOTE TO REALLY WORKS PROPERLY install falcon-jwt-checke from my fork
+>> pip install git+https://github.com/Antherkiv/falcon-jwt-checker.git
 This it's intended to be a monorepo that stores microservices written in python and a pure ES mashup:
 
 1. Registration and authentication

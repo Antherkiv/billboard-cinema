@@ -36,7 +36,6 @@ class Movies(object):
 
     @jsonschema.validate(movie_json_schema)
     def on_post(self, req, resp, **params):
-        print(params)
         media = req.media.copy()
         if session.query(
                 exists().where(Movie.title == media['title'])).scalar():

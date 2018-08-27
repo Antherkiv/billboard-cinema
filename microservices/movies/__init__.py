@@ -19,7 +19,7 @@ JSONEncoder.default = JSONEncoder_newdefault
 jwt_checker = JwtChecker(
     secret='dracula',
     algorithm='HS256',
-    exempt_methods=['GET'],
+    exempt_methods=['GET', 'OPTIONS'],
 )
 
 api = API(middleware=[CORS(), jwt_checker])

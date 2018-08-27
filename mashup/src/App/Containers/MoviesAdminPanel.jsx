@@ -172,7 +172,7 @@ export default class MoviesAdminPanel extends PureComponent {
         history: { push }
       }
     } = this;
-    debugger;
+
     if (
       !poster ||
       titleValue.document.empty ||
@@ -200,7 +200,7 @@ export default class MoviesAdminPanel extends PureComponent {
         alert.success('La entrada se ha creado éxitosamente');
         push('/');
       })
-      .catch(({ response: { data: { detail } } }) => alert.err(detail));
+      .catch(() => alert.err('No ha sido posible crear la entrada.'));
   }
 
   render() {

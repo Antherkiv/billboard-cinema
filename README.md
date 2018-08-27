@@ -37,17 +37,39 @@ Steps:
 1. Ensure you have or install in your OS:
 > Python 3.7
 > Postgres 10.5 (Run the server)
-1. [Ensure you have installed and cofigured mkvitualenvwrapper (this is a very fast and easy way to have python envs)](https://virtualenvwrapper.readthedocs.io/en/latest/)
-2. Make a python virtual environment
+Quote break.
+
+2. [Ensure you have installed and cofigured mkvitualenvwrapper (this is a very fast and easy way to have python envs)](https://virtualenvwrapper.readthedocs.io/en/latest/)
+3. Make a python virtual environment
 ```console
 	(11:00:01) ~/ ❯❯❯  mkvirtualenv ia
 ```
-3. clone the project and go to the root folder:
+4. clone the project and go to the root folder:
 ```console
 	(0:58:23) ~/ ❯❯❯  git clone https://github.com/Antherkiv/billboard-cinema.git
 	(0:59:45) ~/ ❯❯❯  cd billboard-cinema
 ```
-5. Install python dependencies:
+5. Do the bootstraping of initial state
+```console
+	(1:05:01) ~/billboard-cinema ❯❯❯  cd sql
+```
+First the users db:
+```console
+	(1:06:46) ~/billboard-cinema ❯❯❯  pg_dump -U postgres db < db.sql
+
+```
+Movies db:
+```console
+	(1:06:46) ~/billboard-cinema ❯❯❯  pg_dump -U postgres movies < movies.sql
+
+```
+
+Comments db:
+```console
+	(1:06:46) ~/billboard-cinema ❯❯❯  pg_dump -U postgres comments < comments.sql
+
+```
+6. Install python dependencies:
 ```console
 	(1:00:01) ~/billboard-cinema ❯❯❯  cd microservices && pip install -r requeriments.txt
 ```

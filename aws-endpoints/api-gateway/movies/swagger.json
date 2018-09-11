@@ -1,0 +1,147 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This is a simple movie microservice",
+    "version" : "1.0.0",
+    "title" : "Simple movie microservice",
+    "contact" : {
+      "email" : "vhernandez@ia.com.mx"
+    },
+    "license" : {
+      "name" : "MIT",
+      "url" : "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "gl6q9uc7ne.execute-api.us-east-1.amazonaws.com",
+  "schemes": [
+    "https"
+  ],
+  "paths" : {
+    "/" : {
+      "get" : {
+        "tags" : [ "Public" ],
+        "summary" : "Get the list of movies",
+        "operationId" : "getAndSearchMovies",
+        "description" : "By passing in the appropriate options, you can get or search for a movies\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "maximum number of records to return",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 0
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of movies",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "total" : {
+                  "type" : "number"
+                },
+                "results" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/MovieItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Admin" ],
+        "summary" : "Create a movie",
+        "operationId" : "createMovie",
+        "description" : "Create movies to rent on cinema",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "movieItem",
+          "description" : "Movie item to create",
+          "schema" : {
+            "$ref" : "#/definitions/MovieItem"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/{lookup_arg}/review" : {
+      "get" : {
+        "tags" : [ "Public" ],
+        "summary" : "Get the list of movies",
+        "operationId" : "getMovieReview",
+        "description" : "Get an specific movie review\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "path",
+          "required" : true,
+          "name" : "lookup_arg",
+          "description" : "Slug or id to lookup for.",
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Review gotten"
+          },
+          "404" : {
+            "description" : "Review Doesn´t exists"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "MovieItem" : {
+      "type" : "object",
+      "required" : [ "synopsis", "title", "review", "release_date", "poster" ],
+      "properties" : {
+        "synopsis" : {
+          "type" : "string",
+          "minLength" : 15,
+          "maxLength" : 500,
+          "example" : "The movie was very neat!!!"
+        },
+        "title" : {
+          "type" : "string",
+          "maxLength" : 50,
+          "example" : "Very neat movie"
+        },
+        "poster" : {
+          "type" : "string",
+          "format" : "url",
+          "example" : "https://picsum.photos/200/300"
+        },
+        "review" : {
+          "type" : "object",
+          "example" : {
+            "document" : {
+              "nodes" : [ {
+                "kind" : "inline",
+                "type" : "paragraph"
+              } ]
+            }
+          }
+        },
+        "release_date" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    }
+  }
+}

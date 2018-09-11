@@ -1,0 +1,23 @@
+version: 0.1
+
+environment_variables:
+  plaintext:
+    API_ID: "gl6q9uc7ne"
+phases:
+  install:
+    commands:
+  pre_build:
+    commands:
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Updating API
+      - aws apigateway put-rest-api --rest-api-id gl6q9uc7ne --body "./swagger.json" --region us-east-1
+      - echo Deploying API
+      - aws apigateway create-deployment --rest-api-id gl6q9uc7ne --stage-name dev --region us-east-1
+  post_build:
+    commands:
+      - echo Updated and deployed API at https://gl6q9uc7ne.execute-api.us-east-1.amazonaws.com/dev/
+artifacts:
+  files:
+  discard-paths: yes

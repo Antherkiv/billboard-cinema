@@ -1,0 +1,25 @@
+functions:
+
+  create-movies:
+    handler: handlers.create_movies
+    events:
+      - http:
+          path: movies
+          method: post
+
+  list-movies:
+    handler: handlers.list_movies
+    events:
+      - http:
+          path: movies
+          method: get
+
+  retrieve-movie-reviews:
+    handler: handlers.get_movie_review
+    events:
+      - http:
+            path: movies/{lookup_arg}/review
+            method: get
+  
+provider: {name: aws, runtime: python3.6}
+service: movies
